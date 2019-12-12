@@ -30,8 +30,8 @@ router.get('/shipcost', function (req, res) {
     {
       UPSSecurity:
       {
-        UsernameToken: { Username: 'simplyelegantgif', Password: ENV.process.UPS_PASSWORD },
-        ServiceAccessToken: { AccessLicenseNumber: ENV.process.UPS_KEY }
+        UsernameToken: { Username: 'simplyelegantgif', Password: process.env.UPS_PASSWORD },
+        ServiceAccessToken: { AccessLicenseNumber: process.env.UPS_KEY }
       },
       RateRequest:
       {

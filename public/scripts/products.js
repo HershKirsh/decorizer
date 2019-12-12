@@ -25,13 +25,13 @@ function getData(url, method) {
 };
 
 (function () {
-    let url = "http://localhost:3000/products";
+    let url = "http://www.decorizerstore.com/products";
     getData(url, "GET");
 })();
 
 (function () {
     let userName = htmlElements.userName.innerText;
-    let url = `http://localhost:3000/getUser?name=${userName}`;
+    let url = `http://www.decorizerstore.com/getUser?name=${userName}`;
     fetch(url, { method: "GET" })
         .then(res => {
             return res.json();
@@ -185,7 +185,7 @@ const shipElements = {
             if (weight > 150) { weight = 150 }
             let zip = htmlElements.zip.value;
             if (zip === "") { alert('Please enter shipping address') } else {
-                let url = `http://localhost:3000/products/shipcost?zip=${zip}&weight=${weight}`
+                let url = `http://www.decorizerstore.com/products/shipcost?zip=${zip}&weight=${weight}`
                 fetch(url, { method: 'GET' })
                     .then(res => {
                         return res.json();

@@ -10,7 +10,7 @@ var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'info@thedecorizer.com',
-    pass: ENV.process.EMAIL_PASSWORD
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 
