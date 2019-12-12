@@ -1,0 +1,30 @@
+{
+  "name": "decorizer",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000d\u0000e\u0000c\u0000o\u0000r\u0000i\u0000z\u0000e\u0000r\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "devStart": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HershKirsh/decorizer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HershKirsh/decorizer/issues"
+  },
+  "homepage": "https://github.com/HershKirsh/decorizer#readme",
+  "dependencies": {
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.8.0",
+    "nodemailer": "^6.4.2",
+    "request": "2.88.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.1"
+  }
+}

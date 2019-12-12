@@ -1,0 +1,355 @@
+html {
+    scroll-behavior: smooth;
+    --primary-color: #be8d35;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-image: url(/assets/stripe-tile.png);
+    background-size: 20px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+#nav {
+    display: flex;
+    justify-content: space-evenly;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 30px;
+    background-color: var(--primary-color);
+    margin: 0;
+    box-sizing: border-box;
+    padding: 5px 0;
+}
+
+#nav li {
+    list-style: none;
+}
+
+#nav li a {
+    text-decoration: none;
+    color: #fff;
+    transform: all .3s;
+}
+
+#nav li a:hover {
+    opacity: .7;
+    text-decoration: underline;
+}
+
+header {
+    width: 100%;
+    text-align: center;
+    padding-top: 40px;
+    margin: 0;
+}
+
+header img {
+    width: 200px;
+}
+
+#container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20vh;
+}
+
+form label {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+#input-wrapper {
+    display: flex;
+}
+
+input#login-email {
+    width: 200px;
+    height: 30px;
+    border-radius: 10px 0 0 10px;
+    box-sizing: border-box;
+    padding-left: 5px;
+    background: #f8fae1;
+    color: var(--primary-color);
+}
+
+button#submit, button.add-btn {
+    height: 30px;
+    margin-left: -3px;
+    border-radius: 0 10px 10px 0;
+    box-sizing: border-box;
+    background-color: var(--primary-color);
+    border-style: inset;
+    border-left: none;
+    color: #fff;
+    transition: all .3s;
+}
+
+button#submit:hover, button.add-btn:hover {
+    opacity: .7;
+    color: black;
+}
+
+#message {
+    margin-top: 10px;
+    color: red;
+}
+
+section {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    border: 3px solid var(--primary-color);
+    border-radius: 10px;
+    width: 95%;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+section h2 {
+    width: 100%;
+    text-align: left;
+    margin-left: 7%;
+}
+
+.item {
+    width: 20%;
+    min-width: 160px;
+    border: solid 2px var(--primary-color);
+    border-radius: 10px;
+    margin: 10px;
+    padding: 15px 0;
+    background: #dfdfdf9e;
+}
+
+.item img {
+    width: 80%;
+    border-radius: 10px;
+    transition: transform .3s;
+}
+
+.item img:hover {
+    transform: scale(1.5);
+    border: 2px solid var(--primary-color);
+}
+
+.item h5 {
+    margin: 0 0 10px;
+}
+
+.item .price {
+    margin: 5px;
+    text-decoration: line-through;
+}
+
+.item input {
+    width: 50px;
+    padding: 5px;
+    background: #f8fae1;
+    border-width: 1px;
+    margin-left: 5px;
+    box-sizing: border-box;
+    height: 30px;
+    border-radius: 10px 0 0 10px;
+}
+
+.item .add-wrapper {
+    margin-top: 10px;
+}
+
+button.added:focus {
+    position: relative;
+    outline: none;
+}
+
+
+button.added:before {
+    content: 'Item added';
+    position: absolute;
+    width: 100px;
+    height: 25px;
+    background-color: #fff;
+    border-radius: 10px;
+    color: var(--primary-color);
+    padding: 5px;
+    top: -15px;
+    left: -10px;
+    box-sizing: border-box;
+    animation: fade .5s .5s both;
+}
+
+@keyframes fade {
+    to {opacity: 0;}
+}
+
+#checkout {
+    display: flex;
+    justify-content: space-evenly;
+    width: 96%;
+    flex-wrap: wrap;
+}
+
+#cart-wrapper {
+    width: 55%;
+    min-width: 350px;
+    max-width: 750px;
+    border-radius: 10px;
+    background-color: #8a888859;
+    position: relative;
+    overflow: hidden;
+    margin: 0 10px;
+    flex-grow: 5;
+}
+
+#cart {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+thead {
+    padding: 10px;
+    background-color: #fff;
+}
+
+th, td {
+    padding: 5px;
+}
+
+tbody {
+    color: #4e4e4e;
+}
+
+#balance-row {
+    display: none;
+    background-color: #d4c83f7d;
+}
+
+#cart-list td:first-child {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#remove {
+    cursor: pointer;
+    color: #fff;
+}
+
+#remove:hover {
+    color: red;
+}
+
+#ship-row {
+    background-color: #ffffff75;
+}
+
+#price-row {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--primary-color);
+    width: 100%;
+    padding-right: 10px;
+    text-align: right;
+    color: #fff;
+}
+
+#shipping-info {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    margin: 0 10px;
+    min-width: 200px;
+    max-width: 300px;
+    flex-grow: 1;
+}
+
+#shipping-info label {
+    text-align: left;
+    margin-top: 7px;
+}
+
+#shipping-info input, select {
+    border-radius: 7px;
+}
+
+div#sub-wrapper {
+    margin-top: 7px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#state, #zip {
+    width: 30%;
+}
+
+.ship-btn {
+    margin: 20px 10px 0;
+    height: 30px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.ship-btn.added:before {
+    content: 'shipping added';
+    width: 125px;
+    left: 15px;
+}
+
+#paypal-button-container {
+    display: none;
+    margin-top: 20px;
+}
+
+#scroll-to-cart, #scroll-to-top {
+    position: fixed;
+    right: 10px;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+#scroll-to-cart {
+    top: 20px;
+    border: solid 2px var(--primary-color);
+}
+
+#scroll-to-top {
+    transform: rotate(-90deg);
+    bottom: 10px;
+    z-index: 1;
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+    text-align: center;
+    padding: 50px 0 10px;
+    font-family: Verdana, sans-serif;
+    font-size: 10px;
+    width: 100%;
+    color: gray;
+    box-sizing: border-box;
+}
