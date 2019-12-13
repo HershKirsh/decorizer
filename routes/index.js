@@ -59,7 +59,8 @@ router.post('/things', (req, res) => {
             price: thing.price,
             sale: thing.sale,
             num: thing.num,
-            qty: thing.qty
+            qty: thing.qty,
+            img: thing.img
         });
         newThing
             .save()
