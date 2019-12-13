@@ -315,7 +315,7 @@ div#sub-wrapper {
 }
 
 #paypal-button-container {
-    display: none;
+   /* display: none; */
     margin-top: 20px;
 }
 

@@ -149,8 +149,8 @@ const cartElements = {
     total: 0,
     payment: function () {
         let zip = htmlElements.zip.value;
-        let total = getItemTotal();
-        if (zip === "") { alert('Please enter valid shipping address') } else if (total < 150) {
+        let itemTotal = getItemTotal();
+        if (zip === "") { alert('Please enter valid shipping address') } else if (itemTotal < 150) {
             alert("minimum order is $150");
         } else {
             {
@@ -158,7 +158,7 @@ const cartElements = {
                 if (!shipElements.calculated || shipElements.weight !== weight) {
                     shipElements.calcShip();
                 }
-                htmlElements.paypal.style.display = 'block';
+                getPaypal(this.total);
             }
         }
     }
@@ -177,8 +177,8 @@ const shipElements = {
     calculatedWeight: 0,
     cost: 0,
     calcShip: function (btn) {
-        let total = getItemTotal();
-        if (total < 150) {
+        let itenTotal = getItemTotal();
+        if (itenTotal < 150) {
             alert("minimum order is $150");
         } else {
             let weight = cartElements.getWeight();
@@ -214,30 +214,31 @@ const shipElements = {
     }
 };
 
-paypal.Buttons({
-    style: {
-        shape: 'pill',
-        color: 'gold',
-        layout: 'horizontal',
-        label: 'paypal',
+function getPaypal(total) {
+    paypal.Buttons({
+        style: {
+            shape: 'pill',
+            color: 'gold',
+            layout: 'horizontal',
+            label: 'paypal',
 
-    },
-    createOrder: function (data, actions) {
-        return actions.order.create({
-            purchase_units: [{
-                amount: {
-                    value: cartElements.total
-                }
-            }]
-        });
-    },
-    onApprove: function (data, actions) {
-        return actions.order.capture().then(function (details) {
-            processOrder(details);
-        });
-    }
-}).render('#paypal-button-container');
-
+        },
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: total
+                    }
+                }]
+            });
+        },
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+                processOrder(details);
+            });
+        }
+    }).render('#paypal-button-container');
+}
 function processOrder(details) {
     let order = new Object;
     order.items = cartElements.cart;
