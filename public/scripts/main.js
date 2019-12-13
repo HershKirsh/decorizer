@@ -25,23 +25,25 @@ function getData(url, method) {
 };
 
 (function () {
-    let url = "http://www.decorizerstore.com/products";
+    let url = "https://decorizerherokuapp.com.com/products";
     getData(url, "GET");
 })();
 
 (function () {
     let userName = htmlElements.userName.innerText;
-    let url = `http://www.decorizerstore.com/getUser?name=${userName}`;
-    fetch(url, { method: "GET" })
-        .then(res => {
-            return res.json();
-        })
-        .then(data => {
-            userElements.user = data[0];
-            if (data[0].balance != 0.00) {
-                userElements.processBalance()
-            }
-        })
+    if (userName !== "") {
+        let url = `https://decorizer.herokuapp.com/getUser?name=${userName}`;
+        fetch(url, { method: "GET" })
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                userElements.user = data[0];
+                if (data[0].balance != 0.00) {
+                    userElements.processBalance()
+                }
+            })
+    }
 })();
 
 const userElements = {
@@ -184,7 +186,7 @@ const shipElements = {
             if (weight > 150) { weight = 150 }
             let zip = htmlElements.zip.value;
             if (zip === "") { alert('Please enter shipping address') } else {
-                let url = `http://www.decorizerstore.com/products/shipcost?zip=${zip}&weight=${weight}`
+                let url = `https://decorizer.herokuapp.com.com/products/shipcost?zip=${zip}&weight=${weight}`
                 fetch(url, { method: 'GET' })
                     .then(res => {
                         return res.json();
@@ -243,7 +245,7 @@ function processOrder(details) {
     order.user = userElements.user;
     order.id = details.id;
     order.address = details.payer;
-    url = "http://localhost:3000/orders"
+    url = "https://decorizer.herokuapp.com/orders"
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
