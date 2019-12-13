@@ -33,7 +33,7 @@ router.get('/getUser', (req, res) => {
 })
 
 router.post('/users', (req, res) => {
-    req.body.users.forEach(user => {
+    req.body.forEach(user => {
         let newUser = new userModel({
             name: user.name,
             email: user.email,
@@ -52,8 +52,7 @@ router.post('/users', (req, res) => {
 })
 
 router.post('/things', (req, res) => {
-    console.log(req.body);
-    req.body.products.forEach(thing => {
+    req.body.forEach(thing => {
         let newThing = new productModel({
             name: thing.name,
             sku: thing.sku,
