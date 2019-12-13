@@ -52,6 +52,7 @@ router.post('/users', (req, res) => {
 })
 
 router.post('/things', (req, res) => {
+    console.log("Enteredthings path");
     req.body.products.forEach(thing => {
         let newThing = new productModel({
             name: thing.name,
