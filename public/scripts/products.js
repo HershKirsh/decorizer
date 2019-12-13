@@ -165,7 +165,7 @@ const cartElements = {
 
 function getItemTotal() {
     total = 0
-    this.cart.forEach(item => {
+    cartElements.cart.forEach(item => {
         total += (item.sale * item.qty);
     });
     return total;
