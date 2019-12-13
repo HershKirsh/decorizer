@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express();
 const userModel = require('../models/users');
+const productModel = require('../models/products');
 
 router.get('/', (req, res) => {
     res.render('index.ejs', { message: '' });
@@ -43,6 +44,28 @@ router.post('/users', (req, res) => {
             .then(result => {
                 console.log(result);
                 console.log('User Added');
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    });
+})
+
+router.post('/things', (req, res) => {
+    req.body.products.forEach(thing => {
+        let newThing = new productModel({
+            name: thing.name,
+            sku: thing.sku,
+            price: thing.price,
+            sale: thing.sale,
+            num: thing.num,
+            qty: thing.qty
+        });
+        newThing
+            .save()
+            .then(result => {
+                console.log(result);
+                console.log('Product Added');
             })
             .catch(err => {
                 console.log(err);
