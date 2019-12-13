@@ -25,7 +25,7 @@ function getData(url, method) {
 };
 
 (function () {
-    let url = "https://decorizerherokuapp.com.com/products";
+    let url = "https://decorizer.herokuapp.com.com/products";
     getData(url, "GET");
 })();
 
