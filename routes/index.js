@@ -31,4 +31,23 @@ router.get('/getUser', (req, res) => {
         })
 })
 
+router.post('/users', (req, res) => {
+    req.body.users.forEach(user => {
+        let newUser = new userModel({
+            name: user.name,
+            email: user.email,
+            balance: user.balance
+        });
+        newUser
+            .save()
+            .then(result => {
+                console.log(result);
+                console.log('User Added');
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    });
+})
+
 module.exports = router;
