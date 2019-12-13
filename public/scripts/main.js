@@ -73,7 +73,7 @@ var productListItems = {
     appendList: function (list) {
         list.forEach((item, i) => {
             const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <span class="price">$${item.price.toFixed(2)}</span>
-            <b>$${item.sale.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i})">Add To Cart</button></div>`;
+            <b>$${item.sale.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling.value)">Add To Cart</button></div>`;
             createHtml('div', 'item', '', innerString, htmlElements.section[item.num]);
         });
         htmlElements.itemQty = document.querySelectorAll('.item-qty');
@@ -93,15 +93,12 @@ class Item {
 const cartElements = {
     cart: [],
     weights: [0.45, 0.6, 1, 2, 0.1],
-    addItem: function (btn, i) {
-        let qty = htmlElements.itemQty[i].value;
+    addItem: function (btn, i, qty) {
         let listItem = productListItems.productList[i]
         let newItem = new Item(listItem.sku, listItem.name, listItem.sale, this.weights[listItem.num], qty);
         if (qty > 0) {
             if (this.cart.filter(item => item.sku === newItem.sku).length === 0) {
                 this.cart.push(newItem);
-                this.calcTotal();
-                this.updateCart();
             }
             else {
                 this.cart.filter(item => item.sku === newItem.sku)[0].qty = qty;
@@ -109,6 +106,8 @@ const cartElements = {
                 this.updateCart();
             }
             btn.classList.add('added');
+            this.calcTotal();
+            this.updateCart();
             setTimeout(() => {
                 btn.classList.remove('added');
             }, 1000);
