@@ -25,7 +25,7 @@ function getData(url, method) {
 };
 
 (function () {
-    let url = "https://decorizer.herokuapp.com.com/products";
+    let url = "https://decorizer.herokuapp.com/products";
     getData(url, "GET");
 })();
 
@@ -186,7 +186,7 @@ const shipElements = {
             if (weight > 150) { weight = 150 }
             let zip = htmlElements.zip.value;
             if (zip === "") { alert('Please enter shipping address') } else {
-                let url = `https://decorizer.herokuapp.com.com/products/shipcost?zip=${zip}&weight=${weight}`
+                let url = `https://decorizer.herokuapp.com/products/shipcost?zip=${zip}&weight=${weight}`
                 fetch(url, { method: 'GET' })
                     .then(res => {
                         return res.json();
