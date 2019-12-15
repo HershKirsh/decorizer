@@ -30,7 +30,7 @@
             <h2>The Decorizer TRAY (Small serves up to 2 Decorizers and Large up to 3)</h2>
         </section>
         <section id="spoons">
-            <h2>The Decorizer Spoon (Spoons <b>without</b> retail packaging. Sold in quatities of 6)</h2>
+            <h2>The Decorizer Spoon (Spoons <strong>without</strong> retail packaging)</h2>
         </section>
 
         <div id="checkout">
@@ -63,17 +63,19 @@
 
             <div id="shipping-info">
                 <h4>Please enter shipping address</h4>
-                <label for="name">Full Name</label>
-                <input id="name" type="text">
-                <label for="business">Business Name</label>
-                <input id="business" type="text">
-                <label for="street">Street</label>
-                <input type="text">
-                <label for="City">City</label>
-                <input type="text" id="city">
+                <label for="name">Full Name*</label>
+                <input id="name" type="text" onchange="shipElements.updateAddress(this.value, 0)">
+                <label for="business">Business Name*</label>
+                <input id="business" type="text" onchange="shipElements.updateAddress(this.value, 1)">
+                <label for="street">Street*</label>
+                <input id="street" type="text" onchange="shipElements.updateAddress(this.value, 2)">
+                <label for="apt">Unit/Apt.</label>
+                <input id="apt" type="text" onchange="shipElements.updateAddress(`<p>${this.value}<p/>`, 3)">
+                <label for="city">City*</label>
+                <input type="text" id="city" onchange="shipElements.updateAddress(this.value, 4)">
                 <div id="sub-wrapper">
-                    <label for="state">State</label>
-                    <select id="state" placeholder="">
+                    <label for="state">State*</label>
+                    <select id="state" placeholder="" onchange="shipElements.updateAddress(this.value, 5)">
                         <label for="state">State</label>
                         <option value="" disabled selected hidden>Select State</option>
                         <option value="AL">Alabama</option>
@@ -128,9 +130,13 @@
                         <option value="WI">Wisconsin</option>
                         <option value="WY">Wyoming</option>
                     </select>
-                    <label for="zip">Zip</label>
-                    <input type="text" id="zip">
+                    <label for="zip">Zip*</label>
+                    <input type="text" id="zip" onchange="shipElements.updateAddress(this.value, 6)">
                 </div>
+                <label for="tel">Phone Number*</label>
+                <input type="tel" id="tel" onchange="shipElements.updateAddress(this.value, 7)">
+                <label for="email">Email*</label>
+                <input type="email" id="email" onchange="shipElements.updateAddress(this.value, 8)">
                 <div id="ship-cost-btn">
                     <button id="calc-ship" class="ship-btn" onclick="shipElements.calcShip(this)">Calculate Shipping
                         Cost</button>

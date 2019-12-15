@@ -8,6 +8,8 @@ const htmlElements = {
     cartList: document.getElementById('cart-list'),
     total: document.getElementById('total'),
     zip: document.getElementById('zip'),
+    email: document.getElementById('email'),
+    business: document.getElementById('business'),
     calcShipWrap: document.getElementById('ship-cost-btn'),
     calcShip: document.getElementById('calc-ship'),
     paypal: document.getElementById('paypal-button-container')
@@ -24,26 +26,30 @@ function getData(url, method) {
         })
 };
 
+const apiPath = "https://decorizer.herokuapp.com";
+
 (function () {
-    let url = "https://decorizer.herokuapp.com/products";
+    let url = apiPath + "/products";
     getData(url, "GET");
 })();
 
 (function () {
     let userName = htmlElements.userName.innerText;
     if (userName !== "") {
-        let url = `https://decorizer.herokuapp.com/getUser?name=${userName}`;
+        let url = `${apiPath}/getUser?name=${userName}`;
         fetch(url, { method: "GET" })
             .then(res => {
                 return res.json();
             })
             .then(data => {
                 userElements.user = data[0];
+                htmlElements.email.value = userElements.user.email;
+                htmlElements.business.value = userElements.user.name;
                 if (data[0].balance != 0.00) {
                     userElements.processBalance()
                 }
             })
-    }
+    };
 })();
 
 const userElements = {
@@ -73,7 +79,7 @@ var productListItems = {
     appendList: function (list) {
         list.forEach((item, i) => {
             const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <span class="price">$${item.price.toFixed(2)}</span>
-            <b>$${item.sale.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling.value)">Add To Cart</button></div>`;
+            <b>$${item.sale.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button></div>`;
             createHtml('div', 'item', '', innerString, htmlElements.section[item.num]);
         });
         htmlElements.itemQty = document.querySelectorAll('.item-qty');
@@ -81,9 +87,9 @@ var productListItems = {
 };
 
 class Item {
-    constructor(_sku, _description, _sale, _weight, _qty) {
+    constructor(_sku, _name, _sale, _weight, _qty) {
         this.sku = _sku;
-        this.description = _description;
+        this.name = _name;
         this.sale = _sale;
         this.weight = _weight;
         this.qty = _qty;
@@ -93,24 +99,30 @@ class Item {
 const cartElements = {
     cart: [],
     weights: [0.45, 0.6, 1, 2, 0.1],
-    addItem: function (btn, i, qty) {
-        let listItem = productListItems.productList[i]
-        let newItem = new Item(listItem.sku, listItem.name, listItem.sale, this.weights[listItem.num], qty);
-        if (qty > 0) {
-            if (this.cart.filter(item => item.sku === newItem.sku).length === 0) {
-                this.cart.push(newItem);
-            }
-            else {
-                this.cart.filter(item => item.sku === newItem.sku)[0].qty = qty;
+    addItem: function (btn, i, input) {
+        console.log(input.value + ", " + input.max);
+        if (input.value > parseInt(input.max)) {
+            alert(`only ${input.max} available. \n Please lower the quantity`);
+        } else {
+            qty = input.value;
+            let listItem = productListItems.productList[i]
+            let newItem = new Item(listItem.sku, listItem.name, listItem.sale, this.weights[listItem.num], qty);
+            if (qty > 0) {
+                if (this.cart.filter(item => item.sku === newItem.sku).length === 0) {
+                    this.cart.push(newItem);
+                }
+                else {
+                    this.cart.filter(item => item.sku === newItem.sku)[0].qty = qty;
+                    this.calcTotal();
+                    this.updateCart();
+                }
+                btn.classList.add('added');
                 this.calcTotal();
                 this.updateCart();
+                setTimeout(() => {
+                    btn.classList.remove('added');
+                }, 1000);
             }
-            btn.classList.add('added');
-            this.calcTotal();
-            this.updateCart();
-            setTimeout(() => {
-                btn.classList.remove('added');
-            }, 1000);
         }
     },
     remove: function (element, sku) {
@@ -124,7 +136,7 @@ const cartElements = {
         this.cart.forEach(item => {
             let newElement = document.createElement('tr');
             newElement.id = item.sku + '-row';
-            let textNode = (`<td>${item.sku}</td><td>${item.description}</td><td>$${item.sale.toFixed(2)}</td><td>${item.qty}</td><td>$${(item.sale * item.qty).toFixed(2)}</td><td id="remove" title="remove from cart" onclick="cartElements.remove(this, '${item.sku}')">&#8855;</td>`);
+            let textNode = (`<td>${item.sku}</td><td>${item.name}</td><td>$${item.sale.toFixed(2)}</td><td>${item.qty}</td><td>$${(item.sale * item.qty).toFixed(2)}</td><td id="remove" title="remove from cart" onclick="cartElements.remove(this, '${item.sku}')">&#8855;</td>`);
             newElement.innerHTML = textNode;
             htmlElements.cartList.appendChild(newElement);
         });
@@ -147,9 +159,9 @@ const cartElements = {
     },
     total: 0,
     payment: function () {
-        let zip = htmlElements.zip.value;
         let itemTotal = getItemTotal();
-        if (zip === "") { alert('Please enter valid shipping address') } else if (itemTotal < 150) {
+        let valid = validAddress()
+        if (valid > 1) { alert('Please enter valid shipping address') } else if (itemTotal < 150) {
             alert("minimum order is $150");
         } else {
             {
@@ -163,6 +175,16 @@ const cartElements = {
     }
 };
 
+function validAddress() {
+    let count = 0;
+    for (let i = 0; i < shipElements.address.length; i++) {
+        if (shipElements.address[i] === "") {
+            count++;
+        }
+    }
+    return count;
+};
+
 function getItemTotal() {
     total = 0
     cartElements.cart.forEach(item => {
@@ -172,6 +194,10 @@ function getItemTotal() {
 };
 
 const shipElements = {
+    address: ['', '', '', '', '', '', '', '', ''],
+    updateAddress: function (inputValue, num) {
+        this.address[num] = inputValue;
+    },
     calculated: false,
     calculatedWeight: 0,
     cost: 0,
@@ -184,8 +210,10 @@ const shipElements = {
             this.calculatedWeight = weight
             if (weight > 150) { weight = 150 }
             let zip = htmlElements.zip.value;
-            if (zip === "") { alert('Please enter shipping address') } else {
-                let url = `https://decorizer.herokuapp.com/products/shipcost?zip=${zip}&weight=${weight}`
+            let valid = validAddress();
+            console.log(valid)
+            if (valid > 1) { alert('Please enter valid shipping address') } else {
+                let url = `${apiPath}/products/shipcost?zip=${zip}&weight=${weight}`
                 fetch(url, { method: 'GET' })
                     .then(res => {
                         return res.json();
@@ -243,9 +271,10 @@ function processOrder(details) {
     order.items = cartElements.cart;
     order.shipping = shipElements.cost;
     order.user = userElements.user;
-    order.id = details.id;
-    order.address = details.payer;
-    url = "https://decorizer.herokuapp.com/orders"
+    order.address = shipElements.address;
+    order.itemTotal = getItemTotal();
+    order.total = cartElements.total;
+    url = apiPath + "/orders"
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -259,4 +288,4 @@ function processOrder(details) {
                 alert('We received your order. \n Thank you.');
             }
         })
-}
+};

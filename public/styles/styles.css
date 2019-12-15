@@ -25,6 +25,7 @@ body {
     margin: 0;
     box-sizing: border-box;
     padding: 5px 0;
+    box-shadow: 0 1px 6px 0 #20212447;
 }
 
 #nav li {
@@ -214,6 +215,8 @@ button.added:before {
     overflow: hidden;
     margin: 0 10px;
     flex-grow: 5;
+    align-self: center;
+    min-height: 300px;
 }
 
 #cart {
@@ -278,6 +281,10 @@ tbody {
     min-width: 200px;
     max-width: 300px;
     flex-grow: 1;
+}
+
+#shipping-info h4 {
+    margin-bottom: 5px;
 }
 
 #shipping-info label {

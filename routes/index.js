@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/store', (req, res) => {
-    res.render('store.ejs', {userName: ''});
+    res.render('store.ejs', { userName: '' });
 });
 
 router.post('/', (req, res) => {
@@ -30,48 +30,6 @@ router.get('/getUser', (req, res) => {
             console.log(user)
             res.json(user);
         })
-})
-
-router.post('/users', (req, res) => {
-    req.body.forEach(user => {
-        let newUser = new userModel({
-            name: user.name,
-            email: user.email,
-            balance: user.balance
-        });
-        newUser
-            .save()
-            .then(result => {
-                console.log(result);
-                console.log('User Added');
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    });
-})
-
-router.post('/things', (req, res) => {
-    req.body.forEach(thing => {
-        let newThing = new productModel({
-            name: thing.name,
-            sku: thing.sku,
-            price: thing.price,
-            sale: thing.sale,
-            num: thing.num,
-            qty: thing.qty,
-            img: thing.img
-        });
-        newThing
-            .save()
-            .then(result => {
-                console.log(result);
-                console.log('Product Added');
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    });
-})
+});
 
 module.exports = router;
