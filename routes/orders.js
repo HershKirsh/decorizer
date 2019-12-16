@@ -38,6 +38,7 @@ router.post('/', (req, res) => {
     orderModel.findOne({ sku: item.sku })
       .exec()
       .then(item => {
+        console.log(item);
         item[0].qty -= item.qty;
       })
     item
