@@ -306,7 +306,7 @@ div#sub-wrapper {
     width: 30%;
 }
 
-.ship-btn {
+.ship-btn, #back-to-home {
     margin: 20px 10px 0;
     height: 30px;
     border-radius: 10px;
