@@ -87,12 +87,13 @@ var productListItems = {
 };
 
 class Item {
-    constructor(_sku, _name, _sale, _weight, _qty) {
+    constructor(_sku, _name, _sale, _weight, _qty, _img) {
         this.sku = _sku;
         this.name = _name;
         this.sale = _sale;
         this.weight = _weight;
         this.qty = _qty;
+        this.img = _img;
     }
 };
 
@@ -105,7 +106,7 @@ const cartElements = {
         } else {
             qty = input.value;
             let listItem = productListItems.productList[i]
-            let newItem = new Item(listItem.sku, listItem.name, listItem.sale, this.weights[listItem.num], qty);
+            let newItem = new Item(listItem.sku, listItem.name, listItem.sale, this.weights[listItem.num], qty, listItem.img);
             if (qty > 0) {
                 if (this.cart.filter(item => item.sku === newItem.sku).length === 0) {
                     this.cart.push(newItem);

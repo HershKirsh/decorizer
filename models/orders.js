@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const userSchema = require('./users');
 
 
 var OrderSchema = new Schema({
@@ -16,10 +15,18 @@ var OrderSchema = new Schema({
         type: String,
         required: false
     },
-    fulfilled: {
-        type: Boolean,
-        required: false
+    address: {
+        type: Array,
+        required: true
+    },
+    shipping: {
+        type: Number,
+        required: true
     }
+    // fulfilled: {
+    //     type: Boolean,
+    //     required: false
+    // }
 })
 
 module.exports = mongoose.model('orders', OrderSchema);
