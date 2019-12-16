@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
   newOrder.save()
     .then(result => {
       console.log('Order Added');
-      console.log(result);
+      // console.log(result);
     })
     .catch(err => {
       console.log(err);
@@ -35,22 +35,14 @@ router.post('/', (req, res) => {
   req.body.order.items.forEach(item => {
     orderList += `<tr><td>${item.qty}</td><td> x </td><td>${item.sku}</td></tr>`
     itemList += `<tr style="width: 100%;" cellspacing="1" cellpadding="1" border="0"><td align="center"><img src="https://decorizer.herokuapp.com/assets/${item.img}" alt="The Decorizer ${item.sku}" title="${item.name}" style="margin: 7px;width: 50px;"></td><td style="text-align: center;">${item.sku}</td><td style="text-align: center;">${item.name}</td><td style="text-align: center;padding: 10px">${item.qty}</td><td style="text-align: center;padding-right:10px">$${item.sale.toFixed(2)}</td></tr>`;
-    // orderModel.findOne({ sku: item.sku })
-    //   .exec()
-    //   .then(item => {
-    //     console.log(item);
-    //     item[0].qty -= item.qty;
-    //   })
-    // item
-    //   .save()
-    //   .then(result => {
-    //     console.log('Order Added');
-    //     console.log(result);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-  });
+    productModel.findOneAndUpdate({ sku: item.sku }, { qty: item.origQty - item.qty }, { upsert: true, new: true }, function (err, doc) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(doc);
+      }
+    })
+  })
   let order = req.body.order;
   let htmlStr = `<p>Hi,</p>
   <p>Please send:<p/>
