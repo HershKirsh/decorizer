@@ -17,7 +17,7 @@ var transporter = nodemailer.createTransport({
 router.post('/', (req, res) => {
   let newOrder = new orderModel({
     user: req.body.order.user,
-    order: req.body.order.itemList,
+    order: req.body.order.items,
     address: req.body.order.address,
     shipping: req.body.order.shipping
   });

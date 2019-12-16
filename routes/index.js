@@ -7,10 +7,6 @@ router.get('/', (req, res) => {
     res.render('index.ejs', { message: '' });
 });
 
-router.get('/store', (req, res) => {
-    res.render('store.ejs', { userName: '' });
-});
-
 router.post('/', (req, res) => {
     userModel.find({ email: req.body.email })
         .exec()
