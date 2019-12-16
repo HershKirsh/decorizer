@@ -46,7 +46,7 @@ const apiPath = "https://decorizer.herokuapp.com";
                 htmlElements.email.value = userElements.user.email;
                 htmlElements.business.value = userElements.user.name;
                 shipElements.address[1] = userElements.user.name;
-                shipElements.address[8] = userElements.user.eamil;
+                shipElements.address[8] = userElements.user.email;
                 if (data[0].balance != 0.00) {
                     userElements.processBalance()
                 }
