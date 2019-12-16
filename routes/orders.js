@@ -60,7 +60,7 @@ router.post('/', (req, res) => {
   let date = new Date;
   let mailOptions = {
     from: 'info@thedecorizer.com',
-    to: "hershkirsh@gmail.com",  //"boruch@boruchtrading.com, operations@boruchtrading.com",
+    to: "boruch@boruchtrading.com, operations@boruchtrading.com",
     bcc: 'info@thedecorizer.com',
     subject: 'Order - ' + date.toLocaleDateString("en", { hour: "2-digit", minute: "2-digit" }),
     html: htmlStr
@@ -89,7 +89,9 @@ router.post('/', (req, res) => {
       console.log(error);
     } else {
       console.log('Email sent: ' + info.response);
-      res.render('confirmation.ejs');
+      res.render({
+        message: 'success'
+      })
     }
   })
 });
