@@ -169,7 +169,7 @@ const cartElements = {
                 if (!shipElements.calculated || shipElements.weight !== weight) {
                     shipElements.calcShip();
                 }
-                htmlElements.paypal.style.display = 'none';
+                htmlElements.paypal.style.display = 'block';
             }
         }
     }
