@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 const indexRouter = require('./routes/index');
 const productsRouter = require('./routes/products');
 const ordersRouter = require('./routes/orders');
