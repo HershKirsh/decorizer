@@ -273,8 +273,7 @@ function processOrder() {
     order.address = shipElements.address;
     order.itemTotal = getItemTotal();
     order.total = cartElements.total;
-    //let url = apiPath + "/orders"
-    let url = 'http://localhost:3000/orders';
+    let url = apiPath + "/orders"
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

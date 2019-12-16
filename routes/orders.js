@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
     .catch(err => {
       console.log(err);
 
-    });
+    })
   let orderList = "";
   let itemList = "";
   req.body.order.items.forEach(item => {
@@ -40,7 +40,8 @@ router.post('/', (req, res) => {
       .then(item => {
         item[0].qty -= item.qty;
       })
-    item.save()
+    item
+      .save()
       .then(result => {
         console.log('Order Added');
         console.log(result);
@@ -76,11 +77,8 @@ router.post('/', (req, res) => {
       console.log(error);
     } else {
       console.log('Email sent: ' + info.response);
-    };
+    }
   });
-  req.body.order.items.forEach(item => {
-    itemList += `<tr style="width: 100%;" cellspacing="1" cellpadding="1" border="0"><td align="center"><img src="https://decorizer.herokuapp.com/assets/${item.img}" alt="The Decorizer ${item.sku}" title="${item.name}" style="margin: 7px;width: 50px;"></td><td style="text-align: center;">${item.sku}</td><td style="text-align: center;">${item.name}</td><td style="text-align: center;padding: 10px">${item.qty}</td><td style="text-align: center;padding-right:10px">$${item.sale.toFixed(2)}</td></tr>`;
-  })
   let orderConfOptions = {
     from: 'info@thedecorizer.com',
     to: order.address[8],
@@ -101,8 +99,9 @@ router.post('/', (req, res) => {
       res.json({
         message: 'success'
       })
-    };
-  });
+    }
+  })
 });
+
 
 module.exports = router;
