@@ -169,7 +169,7 @@ const cartElements = {
                 if (!shipElements.calculated || shipElements.weight !== weight) {
                     shipElements.calcShip();
                 }
-                getPaypal(this.total);
+                htmlElements.paypal.style.display = 'none';
             }
         }
     }
@@ -241,32 +241,31 @@ const shipElements = {
     }
 };
 
-function getPaypal(total) {
-    paypal.Buttons({
-        style: {
-            shape: 'pill',
-            color: 'gold',
-            layout: 'horizontal',
-            label: 'paypal',
+paypal.Buttons({
+    style: {
+        shape: 'pill',
+        color: 'gold',
+        layout: 'horizontal',
+        label: 'paypal',
 
-        },
-        createOrder: function (data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: total
-                    }
-                }]
-            });
-        },
-        onApprove: function (data, actions) {
-            return actions.order.capture().then(function (details) {
-                processOrder(details);
-            });
-        }
-    }).render('#paypal-button-container');
-}
-function processOrder(details) {
+    },
+    createOrder: function (data, actions) {
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: cartElements.total
+                }
+            }]
+        });
+    },
+    onApprove: function (data, actions) {
+        return actions.order.capture().then(function (details) {
+            processOrder();
+        });
+    }
+}).render('#paypal-button-container');
+
+function processOrder() {
     let order = new Object;
     order.items = cartElements.cart;
     order.shipping = shipElements.cost;
