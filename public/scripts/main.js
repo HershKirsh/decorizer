@@ -158,7 +158,7 @@ const cartElements = {
         return weight;
     },
     total: 0,
-    payment: function () {
+    payment: function (btn) {
         let itemTotal = getItemTotal();
         let valid = validAddress()
         if (valid > 1) { alert('Please enter valid shipping address') } else if (itemTotal < 150) {
@@ -167,7 +167,7 @@ const cartElements = {
             {
                 weight = cartElements.getWeight();
                 if (!shipElements.calculated || shipElements.weight !== weight) {
-                    shipElements.calcShip();
+                    shipElements.calcShip(btn);
                 }
                 htmlElements.paypal.style.display = 'block';
             }
