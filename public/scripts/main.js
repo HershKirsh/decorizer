@@ -100,7 +100,6 @@ const cartElements = {
     cart: [],
     weights: [0.45, 0.6, 1, 2, 0.1],
     addItem: function (btn, i, input) {
-        console.log(input.value + ", " + input.max);
         if (input.value > parseInt(input.max)) {
             alert(`only ${input.max} available. \n Please lower the quantity`);
         } else {
@@ -211,7 +210,6 @@ const shipElements = {
             if (weight > 150) { weight = 150 }
             let zip = htmlElements.zip.value;
             let valid = validAddress();
-            console.log(valid)
             if (valid > 1) { alert('Please enter valid shipping address') } else {
                 let url = `${apiPath}/products/shipcost?zip=${zip}&weight=${weight}`
                 fetch(url, { method: 'GET' })
@@ -232,7 +230,8 @@ const shipElements = {
                         cartElements.total += data;
                         htmlElements.total.innerHTML = cartElements.total.toFixed(2);
                         btn.classList.add('added');
-                        this.cost = data; setTimeout(() => {
+                        this.cost = data;
+                        setTimeout(() => {
                             btn.classList.remove('added');
                         }, 1000);
                     })
@@ -273,7 +272,8 @@ function processOrder() {
     order.address = shipElements.address;
     order.itemTotal = getItemTotal();
     order.total = cartElements.total;
-    url = apiPath + "/orders"
+    //let url = apiPath + "/orders"
+    let url = 'http://localhost:3000/orders';
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
