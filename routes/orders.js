@@ -57,12 +57,13 @@ router.post('/', (req, res) => {
   <br>
   <p>Thank you<br>
   Hershy Kirsh</p>`;
-  let date = new Date;
+  //let date = new Date;
+  //date.toLocaleDateString("en", { hour: "2-digit", minute: "2-digit" })
   let mailOptions = {
     from: 'info@thedecorizer.com',
     to: "boruch@boruchtrading.com, operations@boruchtrading.com",
     bcc: 'info@thedecorizer.com',
-    subject: 'Order - ' + date.toLocaleDateString("en", { hour: "2-digit", minute: "2-digit" }),
+    subject: 'Order - ' + new Date().toLocaleString("en-US", {timeZone: "America/New_York"}),
     html: htmlStr
   };
   transporter.sendMail(mailOptions, function (error, info) {

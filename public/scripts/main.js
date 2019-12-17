@@ -12,7 +12,8 @@ const htmlElements = {
     business: document.getElementById('business'),
     calcShipWrap: document.getElementById('ship-cost-btn'),
     calcShip: document.getElementById('calc-ship'),
-    paypal: document.getElementById('paypal-button-container')
+    paypal: document.getElementById('paypal-button-container'),
+    processing: document.getElementById('processing')
 };
 
 function getData(url, method) {
@@ -215,7 +216,8 @@ const shipElements = {
             let zip = htmlElements.zip.value;
             let valid = validAddress();
             if (valid > 1) { alert('Please enter valid shipping address') } else {
-                let url = `${apiPath}/products/shipcost?zip=${zip}&weight=${weight}`
+                htmlElements.processing.style.display = 'flex';
+                let url = `${apiPath}/products/shipcost?zip=${zip}&weight=${weight}`;
                 fetch(url, { method: 'GET' })
                     .then(res => {
                         return res.json();
@@ -233,6 +235,7 @@ const shipElements = {
                         this.calculated = true;
                         cartElements.total += data;
                         htmlElements.total.innerHTML = cartElements.total.toFixed(2);
+                        htmlElements.processing.style.display = 'none';
                         btn.classList.add('added');
                         this.cost = data;
                         setTimeout(() => {
@@ -263,6 +266,7 @@ paypal.Buttons({
     },
     onApprove: function (data, actions) {
         return actions.order.capture().then(function (details) {
+            htmlElements.processing.style.display = 'flex';
             processOrder();
         });
     }
@@ -288,6 +292,8 @@ function processOrder() {
         .then(data => {
             if (data.message === "success") {
                 alert('We received your order. \n Thank you.');
+                htmlElements.processing.style.display = 'none';
+                window.location.replace("https://decorizerstore.com/");
             }
         })
 };
