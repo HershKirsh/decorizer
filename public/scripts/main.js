@@ -291,9 +291,9 @@ function processOrder() {
         })
         .then(data => {
             if (data.message === "success") {
-                alert('We received your order. \n Thank you.');
+                alert('We received your order and sent you an email confirmation. \n Thank you.');
                 htmlElements.processing.style.display = 'none';
-                window.location.replace("https://decorizerstore.com/");
+                window.location.replace("https://www.decorizerstore.com/");
             }
         })
 };
