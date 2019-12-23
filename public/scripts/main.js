@@ -51,6 +51,9 @@ const apiPath = "https://decorizer.herokuapp.com";
                 if (data[0].balance != 0.00) {
                     userElements.processBalance()
                 }
+                if (data[0].exception) {
+                    userElements.user.exception = true;
+                }
             })
     };
 })();
@@ -165,7 +168,7 @@ const cartElements = {
     payment: function (btn) {
         let itemTotal = getItemTotal();
         let valid = validAddress()
-        if (valid > 1) { alert('Please enter valid shipping address') } else if (itemTotal < 150) {
+        if (valid > 1) { alert('Please enter valid shipping address') } else if (itemTotal < 150 && userElements.user.exception !== true) {
             alert("minimum order is $150");
         } else {
             {
@@ -207,7 +210,7 @@ const shipElements = {
     cost: 0,
     calcShip: function (btn) {
         let itenTotal = getItemTotal();
-        if (itenTotal < 150) {
+        if (itenTotal < 150 && userElements.user.exception !== true) {
             alert("minimum order is $150");
         } else {
             let weight = cartElements.getWeight();
