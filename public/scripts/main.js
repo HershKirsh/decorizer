@@ -262,7 +262,7 @@ paypal.Buttons({
         return actions.order.create({
             purchase_units: [{
                 amount: {
-                    value: cartElements.total
+                    value: cartElements.total.toFixed(2)
                 }
             }]
         });
