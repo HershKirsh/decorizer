@@ -45,39 +45,10 @@ router.post('/', (req, res) => {
       }
     });
   });
-  let order = req.body.order;
-  let htmlStr = `<p>Hi,</p>
-  <p>Please send:<p/>
-  <table><tbody>${orderList}</tbody></table>
-  <p>To:<p/>
-  <p>${order.address[0]}</p>
-  <p>${order.address[1]}</p>
-  <p>${order.address[2]}
-  ${order.address[3]}</p>
-  <p>${order.address[4]}, ${order.address[5]} ${order.address[6]}</p>
-  <p>${order.address[7]}</p>
-  <br>
-  <p>Thank you<br>
-  Hershy Kirsh</p>`;
-  //let date = new Date;
-  //date.toLocaleDateString("en", { hour: "2-digit", minute: "2-digit" })
-  // let mailOptions = {
-  //   from: 'info@thedecorizer.com',
-  //   to: "boruch@boruchtrading.com, operations@boruchtrading.com",
-  //   bcc: 'info@thedecorizer.com',
-  //   subject: 'Order - ' + new Date().toLocaleString("en-US", {timeZone: "America/New_York"}),
-  //   html: htmlStr
-  // };
-  // transporter.sendMail(mailOptions, function (error, info) {
-  //   if (error) {
-  //     console.log(error);
-  //   } else {
-  //     console.log('Email sent: ' + info.response);
-  //   }
-  // });
-  let orderConfOptions = {
+  const email = req.body.order.address[8];
+  const orderConfOptions = {
     from: 'info@thedecorizer.com',
-    to: order.address[8],
+    to: email,
     subject: 'Your Decorizer Order Confirmation',
     html: `<table style="width:100%;background: #ffffff url('https://decorizer.herokuapp.com/assets/stripe-tile.png') repeat; background-size: 20px;height: 100%;"><tbody><tr><td><table cellspacing="0" cellpadding="0" border="0" align="center" width="95%" style="margin:auto;background: transparent;max-width: 600px"><tbody><tr><td><a href="https://decorizer.herokuapp.com" target="_blank"><img src="https://decorizer.herokuapp.com/assets/logo.png" alt="The Decorizer Logo"width="125" border="0"></a></td>
     <td style="padding-top:20px;text-align: right;color: #be8d35;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:12px;"><h1>Your Order Confirmation</h1></td></tr></tbody></table>
