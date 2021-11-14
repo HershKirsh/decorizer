@@ -23,7 +23,6 @@ router.get('/getUser', (req, res) => {
     userModel.find({ name: req.query.name })
         .exec()
         .then(user => {
-            console.log(user)
             res.json(user);
         })
 });
