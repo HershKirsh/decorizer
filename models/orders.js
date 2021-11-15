@@ -22,7 +22,7 @@ var OrderSchema = new Schema({
     shipping: {
         type: Number,
         required: true
-    }
+    },
     time: {
         type: Date,
         default: Date.now
