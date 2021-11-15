@@ -23,10 +23,10 @@ var OrderSchema = new Schema({
         type: Number,
         required: true
     }
-    // fulfilled: {
-    //     type: Boolean,
-    //     required: false
-    // }
+    time: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 module.exports = mongoose.model('orders', OrderSchema);
