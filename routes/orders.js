@@ -33,7 +33,7 @@ router.post('/', (req, res) => {
   let itemList = "";
   req.body.order.items.forEach(item => {
     orderList += `<tr><td>${item.qty}</td><td> x </td><td>${item.sku}</td></tr>`
-    itemList += `<tr style="width: 100%;" cellspacing="1" cellpadding="1" border="0"><td align="center"><img src="https://decorizer.herokuapp.com/assets/${item.img}" alt="The Decorizer ${item.sku}" title="${item.name}" style="margin: 7px;width: 50px;"></td><td style="text-align: center;">${item.sku}</td><td style="text-align: center;">${item.name}</td><td style="text-align: center;padding: 10px">${item.qty}</td><td style="text-align: center;padding-right:10px">$${item.sale.toFixed(2)}</td></tr>`;
+    itemList += `<tr style="width: 100%;" cellspacing="1" cellpadding="1" border="0"><td align="center"><img src="https://decorizer.herokuapp.com/assets/${item.img}" alt="The Decorizer ${item.sku}" title="${item.name}" style="margin: 7px;width: 50px;"></td><td style="text-align: center;">${item.sku}</td><td style="text-align: center;">${item.name}</td><td style="text-align: center;padding: 10px">${item.qty}</td><td style="text-align: center;padding-right:10px">$${item.price.toFixed(2)}</td></tr>`;
     productModel.findOneAndUpdate({ sku: item.sku }, { qty: item.origQty - item.qty }, { upsert: true, new: true, useFindAndModify: false }, function (err, doc) {
       if (err) {
         console.log(err);
@@ -43,35 +43,6 @@ router.post('/', (req, res) => {
     })
   })
   let order = req.body.order;
-  let htmlStr = `<p>Hi,</p>
-  <p>Please send:<p/>
-  <table><tbody>${orderList}</tbody></table>
-  <p>To:<p/>
-  <p>${order.address[0]}</p>
-  <p>${order.address[1]}</p>
-  <p>${order.address[2]}
-  ${order.address[3]}</p>
-  <p>${order.address[4]}, ${order.address[5]} ${order.address[6]}</p>
-  <p>${order.address[7]}</p>
-  <br>
-  <p>Thank you<br>
-  Hershy Kirsh</p>`;
-  //let date = new Date;
-  //date.toLocaleDateString("en", { hour: "2-digit", minute: "2-digit" })
-  let mailOptions = {
-    from: 'info@thedecorizer.com',
-    to: "info@thedecorizer.com",
-    // bcc: 'info@thedecorizer.com',
-    subject: 'Order - ' + new Date().toLocaleString("en-US", {timeZone: "America/New_York"}),
-    html: htmlStr
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-  });
   let orderConfOptions = {
     from: 'info@thedecorizer.com',
     to: order.address[8],

@@ -89,7 +89,7 @@ input#login-email {
     color: var(--primary-color);
 }
 
-button#submit, button.add-btn {
+button#submit, button.add-btn, #return-btn {
     height: 30px;
     margin-left: -3px;
     border-radius: 0 10px 10px 0;
@@ -99,6 +99,7 @@ button#submit, button.add-btn {
     border-left: none;
     color: #fff;
     transition: all .3s;
+    position: relative;
 }
 
 button#submit:hover, button.add-btn:hover {
@@ -130,12 +131,27 @@ section h2 {
 
 .item {
     width: 20%;
-    min-width: 160px;
+    min-width: 140px;
     border: solid 2px var(--primary-color);
     border-radius: 10px;
     margin: 10px;
     padding: 15px 0;
     background: #dfdfdf9e;
+    position: relative;
+}
+
+.item.out-of-stock::before {
+    content: 'Out of Stock';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: grid;
+    background: #ffffff85;
+    place-items: center;
+    font-size: min(8vw, 40px);
+    color: #000;
 }
 
 .item img {
@@ -360,6 +376,26 @@ footer {
     width: 100%;
     color: gray;
     box-sizing: border-box;
+}
+
+#order-submitted-msg {
+    font-size: min(8vw, 40px);
+    max-width: 90%;
+    margin: 20% auto;
+    box-sizing: border-box;
+}
+
+#return-btn {
+    margin: 50px auto;
+    padding: 10px 15px;
+    border-radius: 40px;
+    border: none;
+    text-decoration: none;
+    transition: all .3s;
+}
+
+#return-btn:hover {
+    opacity: 0.7;
 }
 
 #processing {

@@ -73,7 +73,7 @@ const userElements = {
 
 const createHtml = (tagName, className, idName, innerContent, insertTo) => {
     const htmlListItem = document.createElement(tagName);
-    if (className) { htmlListItem.classList.add(className) };
+    if (className) { htmlListItem.classList.add(...className) };
     if (idName) { htmlListItem.id = idName };
     const textNode = (innerContent);
     htmlListItem.innerHTML = textNode;
@@ -84,19 +84,26 @@ var productListItems = {
     productList: [],
     appendList: function (list) {
         list.forEach((item, i) => {
-            const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <span class="price">$${item.price.toFixed(2)}</span>
-            <b>$${item.sale.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button></div>`;
-            createHtml('div', 'item', '', innerString, htmlElements.section[item.num]);
+            const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" min="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button></div>`;
+            createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, htmlElements.section[item.num]);
         });
         htmlElements.itemQty = document.querySelectorAll('.item-qty');
+        htmlElements.itemQty.forEach(input => {
+            input.addEventListener('keydown', e => {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    input.nextElementSibling.click();
+                }
+            })
+        });
     }
 };
 
 class Item {
-    constructor(_sku, _name, _sale, _weight, _qty, _OrigQty, _img) {
+    constructor(_sku, _name, _price, _weight, _qty, _OrigQty, _img) {
         this.sku = _sku;
         this.name = _name;
-        this.sale = _sale;
+        this.price = _price;
         this.weight = _weight;
         this.qty = _qty;
         this.origQty = _OrigQty;
@@ -113,15 +120,13 @@ const cartElements = {
         } else {
             qty = input.value;
             let listItem = productListItems.productList[i]
-            let newItem = new Item(listItem.sku, listItem.name, listItem.sale, this.weights[listItem.num], qty, listItem.qty, listItem.img);
+            let newItem = new Item(listItem.sku, listItem.name, listItem.price, this.weights[listItem.num], qty, listItem.qty, listItem.img);
             if (qty > 0) {
                 if (this.cart.filter(item => item.sku === newItem.sku).length === 0) {
                     this.cart.push(newItem);
                 }
                 else {
                     this.cart.filter(item => item.sku === newItem.sku)[0].qty = qty;
-                    this.calcTotal();
-                    this.updateCart();
                 }
                 btn.classList.add('added');
                 this.calcTotal();
@@ -134,8 +139,8 @@ const cartElements = {
     },
     remove: function (element, sku) {
         element.parentElement.remove();
-        i = this.cart.findIndex(item => item.id === sku);
-        this.cart.splice(i);
+        i = this.cart.findIndex(item => item.sku === sku);
+        this.cart.splice(i, 1);
         this.calcTotal();
     },
     updateCart: function () {
@@ -143,19 +148,35 @@ const cartElements = {
         this.cart.forEach(item => {
             let newElement = document.createElement('tr');
             newElement.id = item.sku + '-row';
-            let textNode = (`<td>${item.sku}</td><td>${item.name}</td><td>$${item.sale.toFixed(2)}</td><td>${item.qty}</td><td>$${(item.sale * item.qty).toFixed(2)}</td><td id="remove" title="remove from cart" onclick="cartElements.remove(this, '${item.sku}')">&#8855;</td>`);
+            let textNode = (`<td>${item.sku}</td><td>${item.name}</td><td>$${item.price.toFixed(2)}</td><td>${item.qty}</td><td>$${(item.price * item.qty).toFixed(2)}</td><td id="remove" title="remove from cart" onclick="cartElements.remove(this, '${item.sku}')">&#8855;</td>`);
             newElement.innerHTML = textNode;
             htmlElements.cartList.appendChild(newElement);
         });
     },
     calcTotal: function () {
-        total = 0
+        let total = 0;
         this.cart.forEach(item => {
-            total += (item.sale * item.qty);
+            total += (item.price * item.qty);
         });
         if (userElements.hasBalance) { total += userElements.balance }
         htmlElements.total.innerHTML = total.toFixed(2);
         this.total = total;
+        if (this.discountAdded) {
+            document.getElementById('discount-row').remove();
+            this.discountAdded = false;
+        }
+        if (total >= 500) {
+            this.addDiscount();
+        }
+    },
+    addDiscount: function () {
+        let discountAmount = this.total * 0.15;
+        setTimeout(() => {
+            htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3"> 15% Discount </td><td colspan="2">-$${discountAmount.toFixed(2)}</td></tr>`);
+        }, 10);
+        this.discountAdded = true;
+        this.total -= discountAmount;
+        htmlElements.total.innerHTML = this.total.toFixed(2);
     },
     getWeight: function () {
         weight = 0
@@ -177,6 +198,7 @@ const cartElements = {
                     shipElements.calcShip(btn);
                 }
                 htmlElements.paypal.style.display = 'block';
+                htmlElements.paypal.scrollIntoView({behavior: 'smooth'})
             }
         }
     }
@@ -195,7 +217,7 @@ function validAddress() {
 function getItemTotal() {
     total = 0
     cartElements.cart.forEach(item => {
-        total += (item.sale * item.qty);
+        total += (item.price * item.qty);
     });
     return total;
 };
@@ -255,8 +277,7 @@ paypal.Buttons({
         shape: 'pill',
         color: 'gold',
         layout: 'horizontal',
-        label: 'paypal',
-
+        label: 'paypal'
     },
     createOrder: function (data, actions) {
         return actions.order.create({
@@ -294,9 +315,8 @@ function processOrder() {
         })
         .then(data => {
             if (data.message === "success") {
-                alert('We received your order and sent you an email confirmation. \n Thank you.');
-                htmlElements.processing.style.display = 'none';
-                window.location.replace("https://www.decorizerstore.com/");
+                document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order and sent you a confirmation email. <br> Thank you!</h4><a id="return-btn" href="https://www.decorizerstore.com">Back to login page</a>';
+                document.body.style = `box-sizing:border-box;max-height:100vh;overflow:hidden;padding:5%`;
             }
         })
 };
