@@ -164,18 +164,19 @@ const cartElements = {
         if (this.discountAdded) {
             document.getElementById('discount-row').remove();
             this.discountAdded = false;
+            this.discountAmount = 0;
         }
         if (total >= 500) {
             this.addDiscount();
         }
     },
     addDiscount: function () {
-        let discountAmount = this.total * 0.15;
+        this.discountAmount = this.total * 0.15;
         setTimeout(() => {
-            htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3"> 15% Discount </td><td colspan="2">-$${discountAmount.toFixed(2)}</td></tr>`);
+            htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3"> 15% Discount </td><td colspan="2">-$${cartElements.discountAmount.toFixed(2)}</td></tr>`);
         }, 10);
         this.discountAdded = true;
-        this.total -= discountAmount;
+        this.total -= this.discountAmount;
         htmlElements.total.innerHTML = this.total.toFixed(2);
     },
     getWeight: function () {
@@ -304,6 +305,7 @@ function processOrder() {
     order.address = shipElements.address;
     order.itemTotal = getItemTotal();
     order.total = cartElements.total;
+    order.discount = cartElements.discountAmount;
     let url = apiPath + "/orders"
     fetch(url, {
         method: 'POST',

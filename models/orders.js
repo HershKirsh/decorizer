@@ -23,6 +23,10 @@ var OrderSchema = new Schema({
         type: Number,
         required: true
     },
+    shipping: {
+        type: Number,
+        required: false
+    },
     time: {
         type: Date,
         default: Date.now
