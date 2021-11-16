@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
   let orderConfOptions = {
     from: 'info@thedecorizer.com',
     to: order.address[8],
-    bcc: 'info@thedecorizer',
+    bcc: 'info@thedecorizer.com',
     subject: 'Your Decorizer Order Confirmation',
     html: `<table style="width:100%;background: #ffffff url('https://decorizer.herokuapp.com/assets/stripe-tile.png') repeat; background-size: 20px;height: 100%;"><tbody><tr><td><table cellspacing="0" cellpadding="0" border="0" align="center" width="95%" style="margin:auto;background: transparent;max-width: 600px"><tbody><tr><td><a href="https://decorizer.herokuapp.com" target="_blank"><img src="https://decorizer.herokuapp.com/assets/logo.png" alt="The Decorizer Logo"width="125" border="0"></a></td>
     <td style="padding-top:20px;text-align: right;color: #be8d35;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:12px;"><h1>Your Order Confirmation</h1></td></tr></tbody></table>
