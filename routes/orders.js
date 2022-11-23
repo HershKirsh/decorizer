@@ -1,18 +1,16 @@
+require('dotenv').config();
 const express = require('express');
 const router = express();
 const connection = require('../data/db');
 const productModel = require('../models/products');
 const orderModel = require('../models/orders');
-var nodemailer = require('nodemailer');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'info@thedecorizer.com',
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// var sendMail = function (email) {
+//   return sgMail.send(email);
+// };
 
 router.post('/', (req, res) => {
   let newOrder = new orderModel({
@@ -22,30 +20,30 @@ router.post('/', (req, res) => {
     shipping: req.body.order.shipping,
     discount: req.body.order.discount || 0
   });
-  newOrder.save()
+  newOrder
+    .save()
     .then(result => {
-      console.log('Order Added')
+      console.log('Order Added');
     })
     .catch(err => {
       console.log(err);
-
-    })
-  let orderList = "";
-  let itemList = "";
+    });
+  let orderList = '';
+  let itemList = '';
   req.body.order.items.forEach(item => {
-    orderList += `<tr><td>${item.qty}</td><td> x </td><td>${item.sku}</td></tr>`
+    orderList += `<tr><td>${item.qty}</td><td> x </td><td>${item.sku}</td></tr>`;
     itemList += `<tr style="width: 100%;" cellspacing="1" cellpadding="1" border="0"><td align="center"><img src="https://decorizer.herokuapp.com/assets/${item.img}" alt="The Decorizer ${item.sku}" title="${item.name}" style="margin: 7px;width: 50px;"></td><td style="text-align: center;">${item.sku}</td><td style="text-align: center;">${item.name}</td><td style="text-align: center;padding: 10px">${item.qty}</td><td style="text-align: center;padding-right:10px">$${item.price.toFixed(2)}</td></tr>`;
-    productModel.findOneAndUpdate({ sku: item.sku }, { qty: item.origQty - item.qty }, { upsert: true, new: true, useFindAndModify: false }, function (err, doc) {
+    productModel.findOneAndUpdate({sku: item.sku}, {qty: item.origQty - item.qty}, {upsert: true, new: true, useFindAndModify: false}, function (err, doc) {
       if (err) {
         console.log(err);
       } else {
         console.log(doc);
       }
-    })
-  })
+    });
+  });
   let order = req.body.order;
   let orderConfOptions = {
-    from: 'info@thedecorizer.com',
+    from: 'sales@thedecorizer.com',
     to: order.address[8],
     bcc: 'info@thedecorizer.com',
     subject: 'Your Decorizer Order Confirmation',
@@ -56,18 +54,19 @@ router.post('/', (req, res) => {
     <p style="margin-bottom:2em">Dear Customer,</p><p style="margin-bottom:1em">Thank you for ordering from <strong>The Decorizer®</strong>.</p><p style="margin-bottom:2em">We are processing your order and we'll send it out as soon as possible.</p></td></tr> ${itemList}<tr><td colspan="4">
     <table style="width: 36%;margin: 30px 0 30px 60%;color:#be8d35;"><tbody>${order.discount ? `<tr cellspacing="1" cellpadding="1" border="0" style="white-space: nowrap;"><td align="left">Discount</td><td style="text-align: right;">-$${order.discount.toFixed(2)}</td></tr>` : ''}<tr cellspacing="1" cellpadding="1" border="0" style="white-space: nowrap;"><td align="left">Order Total</td><td style="text-align: right;">$${order.itemTotal.toFixed(2)}</td></tr><tr cellspacing="1" cellpadding="1" border="0"><td align="left">Shipping</td><td style="text-align:right;">$${order.shipping.toFixed(2)}</td></tr><tr cellspacing="1" cellpadding="1" border="0"><td align="left">Total</td><td style="text-align: right;">$${order.total.toFixed(2)}</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td>
     <table cellspacing="0" cellpadding="0" border="0" align="center" width="650" style="margin:auto"><tbody><tr><td style="padding:40px 45px 15px 45px;text-align:left;font-family:ShopifySans,'Helvetica Neue',Helvetica,sans-serif;font-size:1em;font-weight:400;line-height:1.5em;color:#637381; background: transparent"></td></tr><tr><td style="padding:10px 45px;text-align:left;font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:12px;font-weight:400;line-height:1.5em;color:grey;text-align: center;">© <span>Simply Elegant Gifts LLC</span>,<span>&nbsp;Home of The Decorizer®</span><br><br><br></td></tr></tbody></table></td></tr></tbody></table>`
-  }
-  transporter.sendMail(orderConfOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
+  };
+  sgMail
+    .send(orderConfOptions)
+    .then(() => {
       res.json({
         message: 'success'
-      })
-    }
-  })
+      });
+    })
+    .catch(e => {
+      res.json({
+        error: 'emial was not sent'
+      });
+    });
 });
-
 
 module.exports = router;
