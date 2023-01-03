@@ -64,7 +64,7 @@ router.post('/', (req, res) => {
     })
     .catch(e => {
       res.json({
-        error: 'emial was not sent'
+        error: 'email was not sent'
       });
     });
 });

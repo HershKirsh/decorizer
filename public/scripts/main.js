@@ -334,7 +334,10 @@ function processOrder() {
     .then(data => {
       if (data.message === 'success') {
         document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order and sent you a confirmation email. <br> Thank you!</h4><a id="return-btn" href="https://www.decorizerstore.com">Back to login page</a>';
-        document.body.style = `box-sizing:border-box;max-height:100vh;overflow:hidden;padding:5%`;
       }
+      if (data.error === 'email was not sent') {
+        document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order. <br> Thank you!</h4><a id="return-btn" href="https://www.decorizerstore.com">Back to login page</a>';
+      }
+      document.body.style = `box-sizing:border-box;max-height:100vh;overflow:hidden;padding:5%`;
     });
 }
