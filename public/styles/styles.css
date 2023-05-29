@@ -409,6 +409,7 @@ div#sub-wrapper {
 #scroll-to-cart {
     top: 20px;
     border: solid 2px var(--primary-color);
+    z-index: 5;
 }
 
 #scroll-to-top {
