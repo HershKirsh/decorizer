@@ -9,7 +9,12 @@ const productsRouter = require('./routes/products');
 const ordersRouter = require('./routes/orders');
 const adminRouter = require('./routes/admin');
 const app = express();
-
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') === 'https') return next();
+    res.redirect(`https://${req.header('host')}${req.url}`);
+  });
+}
 // app.engine('html', require('ejs').renderFile);
 // app.set('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
@@ -39,7 +44,7 @@ app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+  next();
 });
 
 // error handler

@@ -6,7 +6,7 @@ head
   link#fav(rel='icon' href='./assets/favicon.png' type='image/gif' sizes='16x16')
   link(rel='stylesheet' href='/styles/styles.css')
   link(rel='stylesheet' href='/styles/admin.css')
-  title The Decorizer Admin
+  title The Decorizer - Admin
 body
   header
     img(src='/assets/logo.png' alt='The Decorizer logo')
@@ -32,4 +32,4 @@ body
             span=`$${order.order.reduce((a, b) => a + parseFloat(b.price || b.sale) * b.qty, 0) + order.shipping}`
         
   footer(style='position: fixed;')
-    span &copy; 2021, Simply Elegant Gifts LLC
+    span &copy; 2023, Simply Elegant Gifts LLC
