@@ -28,7 +28,7 @@ function getData(url, method) {
 }
 
 const apiPath = 'https://decorizer.herokuapp.com';
-// const apiPath = "http://localhost:3000";
+// const apiPath = 'http://localhost:3000';
 
 (function () {
   let url = apiPath + '/products';
@@ -72,26 +72,24 @@ const userElements = {
   }
 };
 
-const createHtml = (tagName, className, idName, innerContent, insertTo) => {
+const createHtml = (tagName, classNames, idName, innerContent, insertTo) => {
   const htmlListItem = document.createElement(tagName);
-  if (className) {
-    htmlListItem.classList.add(...className);
-  }
-  if (idName) {
-    htmlListItem.id = idName;
-  }
+  if (classNames) htmlListItem.classList.add(...classNames);
+  if (idName) htmlListItem.id = idName;
   const textNode = innerContent;
   htmlListItem.innerHTML = textNode;
   insertTo.insertAdjacentElement('beforeend', htmlListItem);
 };
 
-var productListItems = {
+const productListItems = {
   productList: [],
   appendList: function (list) {
-    list.forEach((item, i) => {
-      const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" min="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button></div>`;
-      createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, htmlElements.section[item.num]);
-    });
+    list
+      .sort((a, b) => a.order > b.order)
+      .forEach((item, i) => {
+        const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" min="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button></div>`;
+        createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, htmlElements.section[item.num]);
+      });
     htmlElements.itemQty = document.querySelectorAll('.item-qty');
     htmlElements.itemQty.forEach(input => {
       input.addEventListener('keydown', e => {
@@ -101,45 +99,28 @@ var productListItems = {
         }
       });
     });
+    document.querySelectorAll('.item img').forEach(x => x.addEventListener('click', () => x.classList.toggle('show')));
   }
 };
 
-class Item {
-  constructor(_sku, _name, _price, _weight, _qty, _OrigQty, _img) {
-    this.sku = _sku;
-    this.name = _name;
-    this.price = _price;
-    this.weight = _weight;
-    this.qty = _qty;
-    this.origQty = _OrigQty;
-    this.img = _img;
-  }
-}
-
 const cartElements = {
   cart: [],
-  weights: [0.45, 0.6, 1, 2, 0.1],
+  weights: [3, 5, 0.45, 0.6, 1, 2, 0.1],
+  cubicSizes: [774, 785, 83, 110, 59, 326, 0.5],
   addItem: function (btn, i, input) {
-    if (input.value > parseInt(input.max)) {
-      alert(`only ${input.max} available. \n Please lower the quantity`);
-    } else {
-      qty = input.value;
-      let listItem = productListItems.productList[i];
-      let newItem = new Item(listItem.sku, listItem.name, listItem.price, this.weights[listItem.num], qty, listItem.qty, listItem.img);
-      if (qty > 0) {
-        if (this.cart.filter(item => item.sku === newItem.sku).length === 0) {
-          this.cart.push(newItem);
-        } else {
-          this.cart.filter(item => item.sku === newItem.sku)[0].qty = qty;
-        }
-        btn.classList.add('added');
-        this.calcTotal();
-        this.updateCart();
-        setTimeout(() => {
-          btn.classList.remove('added');
-        }, 1000);
-      }
-    }
+    if (input.value > parseInt(input.max)) return alert(`only ${input.max} available. \n Please reduce the quantity`);
+    const qty = input.value;
+    let listItem = productListItems.productList[i];
+    let newItem = {...listItem, origQty: listItem.qty, qty: qty, weight: this.weights[listItem.num], cubicSize: this.cubicSizes[listItem.num]};
+    if (qty < 1) return;
+    const existingCartItem = this.cart.filter(item => item.sku === newItem.sku)[0];
+    existingCartItem ? (existingCartItem.qty = qty) : this.cart.push(newItem);
+    btn.classList.add('added');
+    this.calcTotal();
+    this.updateCart();
+    setTimeout(() => {
+      btn.classList.remove('added');
+    }, 1000);
   },
   remove: function (element, sku) {
     element.parentElement.remove();
@@ -149,19 +130,17 @@ const cartElements = {
   },
   updateCart: function () {
     htmlElements.cartList.innerHTML = '';
+    shipElements.calculated = false;
     this.cart.forEach(item => {
-      let newElement = document.createElement('tr');
+      const newElement = document.createElement('tr');
       newElement.id = item.sku + '-row';
-      let textNode = `<td>${item.sku}</td><td>${item.name}</td><td>$${item.price.toFixed(2)}</td><td>${item.qty}</td><td>$${(item.price * item.qty).toFixed(2)}</td><td id="remove" title="remove from cart" onclick="cartElements.remove(this, '${item.sku}')">&#8855;</td>`;
+      const textNode = `<td>${item.sku}</td><td>${item.name}</td><td>$${item.price.toFixed(2)}</td><td>${item.qty}</td><td>$${(item.price * item.qty).toFixed(2)}</td><td id="remove" title="remove from cart" onclick="cartElements.remove(this, '${item.sku}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></td>`;
       newElement.innerHTML = textNode;
       htmlElements.cartList.appendChild(newElement);
     });
   },
   calcTotal: function () {
-    let total = 0;
-    this.cart.forEach(item => {
-      total += item.price * item.qty;
-    });
+    let total = this.cart.map(x => x.price * x.qty).reduce((a, b) => a + b, 0);
     if (userElements.hasBalance) {
       total += userElements.balance;
     }
@@ -172,25 +151,28 @@ const cartElements = {
       this.discountAdded = false;
       this.discountAmount = 0;
     }
-    if (total >= 500) {
+    if (this.cart.some(item => item.discount)) {
       this.addDiscount();
     }
   },
   addDiscount: function () {
-    this.discountAmount = this.total * 0.15;
+    this.discountAmount =
+      this.cart
+        .filter(item => item.discount)
+        .map(x => x.price * x.qty)
+        .reduce((a, b) => a + b, 0) * 0.1;
     setTimeout(() => {
-      htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3"> 15% Discount </td><td colspan="2">-$${cartElements.discountAmount.toFixed(2)}</td></tr>`);
+      htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3"> 10% Preorder Items Discount</td><td colspan="2">-$${cartElements.discountAmount.toFixed(2)}</td></tr>`);
     }, 10);
     this.discountAdded = true;
     this.total -= this.discountAmount;
     htmlElements.total.innerHTML = this.total.toFixed(2);
   },
   getWeight: function () {
-    weight = 0;
-    this.cart.forEach(item => {
-      weight += item.weight * item.qty;
-    });
-    return weight;
+    return this.cart.map(x => x.weight * x.qty).reduce((a, b) => a + b, 0);
+  },
+  getSize: function () {
+    return this.cart.map(x => x.cubicSize * x.qty).reduce((a, b) => a + b, 0);
   },
   total: 0,
   payment: function (btn) {
@@ -202,8 +184,9 @@ const cartElements = {
       alert('minimum order is $150');
     } else {
       {
-        weight = cartElements.getWeight();
-        if (!shipElements.calculated || shipElements.weight !== weight) {
+        const weight = cartElements.getWeight();
+        const Size = cartElements.getSize();
+        if (!shipElements.calculated || shipElements.weight !== weight || shipElements.size !== size) {
           shipElements.calcShip(btn);
         }
         htmlElements.paypal.style.display = 'block';
@@ -245,42 +228,38 @@ const shipElements = {
       alert('minimum order is $150');
     } else {
       let weight = cartElements.getWeight();
+      let size = cartElements.getSize();
       this.calculatedWeight = weight;
-      if (weight > 150) {
-        weight = 150;
-      }
+      if (weight > 150) weight = 150;
       let zip = htmlElements.zip.value;
       let valid = validAddress();
-      if (valid > 1) {
-        alert('Please enter valid shipping address');
-      } else {
-        htmlElements.processing.style.display = 'flex';
-        let url = `${apiPath}/products/shipcost?zip=${zip}&weight=${weight}`;
-        fetch(url, {method: 'GET'})
-          .then(res => {
-            return res.json();
-          })
-          .then(data => {
-            if (this.calculated) {
-              document.getElementById('ship-row').remove();
-              cartElements.total -= this.cost;
-            }
-            let newElement = document.createElement('tr');
-            newElement.id = 'ship-row';
-            let textNode = `<td>&nbsp;</td><td colspan="3"> Shipping </td><td colspan="2">$${data.toFixed(2)}</td>`;
-            newElement.innerHTML = textNode;
-            htmlElements.cartList.appendChild(newElement);
-            this.calculated = true;
-            cartElements.total += data;
-            htmlElements.total.innerHTML = cartElements.total.toFixed(2);
-            htmlElements.processing.style.display = 'none';
-            btn.classList.add('added');
-            this.cost = data;
-            setTimeout(() => {
-              btn.classList.remove('added');
-            }, 1000);
-          });
-      }
+      if (valid > 1) return alert('Please enter valid shipping address');
+      htmlElements.processing.style.display = 'flex';
+      let url = `${apiPath}/products/shipcost?zip=${zip}&weight=${weight}&size=${size}`;
+      fetch(url, {method: 'GET'})
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          if (this.calculated) {
+            document.getElementById('ship-row').remove();
+            cartElements.total -= this.cost;
+          }
+          let newElement = document.createElement('tr');
+          newElement.id = 'ship-row';
+          let textNode = `<td>&nbsp;</td><td colspan="3"> Shipping </td><td colspan="2">$${data.toFixed(2)}</td>`;
+          newElement.innerHTML = textNode;
+          htmlElements.cartList.appendChild(newElement);
+          this.calculated = true;
+          cartElements.total += data;
+          htmlElements.total.innerHTML = cartElements.total.toFixed(2);
+          htmlElements.processing.style.display = 'none';
+          btn.classList.add('added');
+          this.cost = data;
+          setTimeout(() => {
+            btn.classList.remove('added');
+          }, 1000);
+        });
     }
   }
 };

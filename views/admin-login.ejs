@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link id="fav" rel="icon" href="./assets/favicon.png" type="image/gif" sizes="16x16">
     <link rel='stylesheet' href='/styles/styles.css' />
-    <title>The Decorizer Wholesale</title>
+    <title>The Decorizer Wholesale Orders</title>
 </head>
 
 <body>
@@ -15,14 +15,19 @@
         <img src="/assets/logo.png" alt="The Decorizer logo">
     </header>
     <div id="container">
-        <h3>The Decorizer Wholesale Portal</h3>
-        <form action="/" method="POST">
-            <label for="email">Please sign in with a registered email</label>
+        <h3>The Decorizer Admin Login</h3>
+        <form method="POST">
+            <span for="email">Please sign in</span>
             <div id="input-wrapper">
-                <input name="email" id="login-email" type="email" placeholder="john.doe@gmail.com">
-                <button id="submit">&#10140;</button>
+                <label for="username">Username</label>
+                <input name="username" id="lusername" type="username">
             </div>
-            <span id="message"> <%= message %> </span>
+            <div id="input-wrapper">
+                <label for="password">password</label>
+                <input name="password" id="password" type="password">
+            </div>
+            <button id="submit">&#10140;</button>
+            <span id="message"></span>
         </form>
     </div>
     <footer style="position: absolute;">
