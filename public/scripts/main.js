@@ -83,11 +83,18 @@ const createHtml = (tagName, classNames, idName, innerContent, insertTo) => {
 
 const productListItems = {
   productList: [],
+  increments: [3, 1, 6, 4, 3, 3, 6],
   appendList: function (list) {
     list
       .sort((a, b) => a.order > b.order)
       .forEach((item, i) => {
-        const innerString = `<img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span><div class="add-wrapper"><input class="item-qty" type="number" placeholder="0" min="0" max="${item.qty}"><button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button></div>`;
+        const innerString = `<h5 class="item-title">${item.name}</h5><img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span>
+        <div class="add-wrapper">
+          <button class="dec-qty-btn" onclick="decQty(this.nextElementSibling)">-</button>
+          <output class="item-qty" data-max="${item.qty}" data-inc="${this.increments[item.num]}">0</output>
+          <button class="inc-qty-btn" onclick="incQty(this.previousElementSibling)">+</button>
+        </div>
+        <button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button>`;
         createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, htmlElements.section[item.num]);
       });
     htmlElements.itemQty = document.querySelectorAll('.item-qty');
@@ -103,13 +110,23 @@ const productListItems = {
   }
 };
 
+function decQty(output) {
+  const qty = parseInt(output.innerText);
+  output.innerText = Math.max(0, qty - output.dataset.inc);
+}
+
+function incQty(output) {
+  const qty = parseInt(output.innerText);
+  output.innerText = Math.min(qty + parseInt(output.dataset.inc), parseInt(output.dataset.max));
+}
+
 const cartElements = {
   cart: [],
   weights: [3, 5, 0.45, 0.6, 1, 2, 0.1],
   cubicSizes: [774, 785, 83, 110, 59, 326, 0.5],
-  addItem: function (btn, i, input) {
-    if (input.value > parseInt(input.max)) return alert(`only ${input.max} available. \n Please reduce the quantity`);
-    const qty = input.value;
+  addItem: function (btn, i, qtyWrapper) {
+    const qty = parseInt(qtyWrapper.querySelector('output').innerText);
+    // if (qty > parseInt(qty.max)) return alert(`only ${qty.max} available. \n Please reduce the quantity`);
     let listItem = productListItems.productList[i];
     let newItem = {...listItem, origQty: listItem.qty, qty: qty, weight: this.weights[listItem.num], cubicSize: this.cubicSizes[listItem.num]};
     if (qty < 1) return;
