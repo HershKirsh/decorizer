@@ -88,7 +88,7 @@ const productListItems = {
     list
       .sort((a, b) => a.order > b.order)
       .forEach((item, i) => {
-        const innerString = `<h5 class="item-title">${item.name}</h5><img src="/assets/${item.img}" alt="${item.name}" title="${item.name}"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span>
+        const innerString = `<h5 class="item-title">${item.name}</h5><img src="/assets/${item.img}" alt="${item.name}" title="Click to expand"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span>
         <div class="add-wrapper">
           <button class="dec-qty-btn" onclick="decQty(this.nextElementSibling)">-</button>
           <output class="item-qty" data-max="${item.qty}" data-inc="${this.increments[item.num]}">0</output>

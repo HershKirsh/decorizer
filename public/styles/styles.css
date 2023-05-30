@@ -155,6 +155,13 @@ section h2 {
     margin-left: 7%;
 }
 
+span.increments-message {
+    margin-left: 10px;
+    color: #262626;
+    font-size: 16px;
+    font-weight: normal;
+}
+
 .item {
     width: 20%;
     min-width: 140px;
@@ -169,7 +176,11 @@ section h2 {
     align-items: center;
 }
 
-.item.out-of-stock::before {
+.item.out-of-stock {
+    display: none;
+}
+
+/* .item.out-of-stock::before {
     content: 'Out of Stock';
     position: absolute;
     width: 100%;
@@ -182,7 +193,7 @@ section h2 {
     font-size: min(8vw, 40px);
     color: #000;
     z-index: 1;
-}
+} */
 
 h5.item-title {
     font-weight: normal;
@@ -195,6 +206,8 @@ h5.item-title {
     border-radius: 10px;
     transition: transform .3s;
     flex-grow: 1;
+    object-fit: contain;
+    background: #fff;
 }
 
 /* .item img:hover {
