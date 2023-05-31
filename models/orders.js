@@ -12,7 +12,7 @@ var OrderSchema = new Schema({
         required: true
     },
     total: {
-        type: String,
+        type: Number,
         required: false
     },
     address: {
@@ -23,8 +23,16 @@ var OrderSchema = new Schema({
         type: Number,
         required: true
     },
-    shipping: {
+    invoiceNumber: {
         type: Number,
+        required: false
+    },
+    discount: {
+        type: Number,
+        required: false
+    },
+    discountName: {
+        type: String,
         required: false
     },
     time: {

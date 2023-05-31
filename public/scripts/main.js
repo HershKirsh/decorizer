@@ -172,6 +172,7 @@ const cartElements = {
       this.addDiscount();
     }
   },
+  discountName: '10% Preorder Items Discount',
   addDiscount: function () {
     this.discountAmount =
       this.cart
@@ -179,7 +180,7 @@ const cartElements = {
         .map(x => x.price * x.qty)
         .reduce((a, b) => a + b, 0) * 0.1;
     setTimeout(() => {
-      htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3"> 10% Preorder Items Discount</td><td colspan="2">-$${cartElements.discountAmount.toFixed(2)}</td></tr>`);
+      htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3">${this.discountName}</td><td colspan="2">-$${cartElements.discountAmount.toFixed(2)}</td></tr>`);
     }, 10);
     this.discountAdded = true;
     this.total -= this.discountAmount;
@@ -310,15 +311,17 @@ paypal
   .render('#paypal-button-container');
 
 function processOrder() {
-  let order = new Object();
-  order.items = cartElements.cart;
-  order.shipping = shipElements.cost;
-  order.user = userElements.user;
-  order.address = shipElements.address;
-  order.itemTotal = getItemTotal();
-  order.total = cartElements.total;
-  order.discount = cartElements.discountAmount;
-  let url = apiPath + '/orders';
+  const order = {
+    items: cartElements.cart,
+    shipping: shipElements.cost,
+    user: userElements.user,
+    address: shipElements.address,
+    itemTotal: getItemTotal(),
+    total: cartElements.total,
+    discount: cartElements.discountAmount,
+    discountName: cartElements.discountName
+  };
+  const url = apiPath + '/orders';
   fetch(url, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
@@ -329,10 +332,10 @@ function processOrder() {
     })
     .then(data => {
       if (data.message === 'success') {
-        document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order and sent you a confirmation email. <br> Thank you!</h4><a id="return-btn" href="https://www.decorizerstore.com">Back to login page</a>';
+        document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order and sent you a confirmation email with your invoice. <br> Thank you!</h4><a id="return-btn" href="/">Back to login page</a>';
       }
       if (data.error === 'email was not sent') {
-        document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order. <br> Thank you!</h4><a id="return-btn" href="https://www.decorizerstore.com">Back to login page</a>';
+        document.body.innerHTML = '<h4 id="order-submitted-msg">We received your order. <br> Thank you!</h4><a id="return-btn" href="/">Back to login page</a>';
       }
       document.body.style = `box-sizing:border-box;max-height:100vh;overflow:hidden;padding:5%`;
     });
