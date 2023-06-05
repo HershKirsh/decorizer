@@ -37,9 +37,6 @@ function createInvoice(data) {
 }
 
 router.post('/', async (req, res) => {
-  res.json({message: 'success'})
-})
-router.post('/', async (req, res) => {
   const order = req.body.order;
   const invoiceNumber = await getInvoiceNumber();
   const newOrder = new orderModel({
