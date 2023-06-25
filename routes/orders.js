@@ -30,7 +30,6 @@ function getTemplate() {
 function createInvoice(data) {
   return new Promise(res => {
     easyinvoice.createInvoice(data, result => {
-      console.log('invoice created');
       res(result.pdf);
     });
   });

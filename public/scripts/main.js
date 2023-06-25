@@ -158,9 +158,8 @@ const cartElements = {
   },
   calcTotal: function () {
     let total = this.cart.map(x => x.price * x.qty).reduce((a, b) => a + b, 0);
-    if (userElements.hasBalance) {
-      total += userElements.balance;
-    }
+    const itemTotal = total;
+    if (userElements.hasBalance) total += userElements.balance;
     htmlElements.total.innerHTML = total.toFixed(2);
     this.total = total;
     if (this.discountAdded) {
@@ -168,17 +167,17 @@ const cartElements = {
       this.discountAdded = false;
       this.discountAmount = 0;
     }
-    if (this.cart.some(item => item.discount)) {
+    if (itemTotal >= 500) {
       this.addDiscount();
     }
   },
-  discountName: '10% Preorder Items Discount',
+  discountName: '15% Discount',
   addDiscount: function () {
     this.discountAmount =
       this.cart
-        .filter(item => item.discount)
+        .filter(item => !item.discount)
         .map(x => x.price * x.qty)
-        .reduce((a, b) => a + b, 0) * 0.1;
+        .reduce((a, b) => a + b, 0) * 0.15;
     setTimeout(() => {
       htmlElements.cartList.insertAdjacentHTML('beforeend', `<tr id="discount-row"><td>&nbsp;</td><td colspan="3">${this.discountName}</td><td colspan="2">-$${cartElements.discountAmount.toFixed(2)}</td></tr>`);
     }, 10);
