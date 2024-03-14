@@ -95,7 +95,7 @@ const productListItems = {
           <button class="inc-qty-btn" onclick="incQty(this.previousElementSibling)">+</button>
         </div>
         <button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button>`;
-        createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, htmlElements.section[item.num]);
+        createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, document.getElementById(item.section));
       });
     htmlElements.itemQty = document.querySelectorAll('.item-qty');
     htmlElements.itemQty.forEach(input => {

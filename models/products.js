@@ -6,6 +6,10 @@ var ProductsSchema = new Schema({
         type: Number,
         required: true
     },
+   section: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true
