@@ -26,6 +26,16 @@ button {
     cursor: pointer;
 }
 
+.banner {
+    background: #fff;
+    padding: 10px;
+}
+
+.banner>p {
+    margin: 0;
+    font-size: 20px;
+}
+
 #nav {
     display: flex;
     justify-content: space-evenly;

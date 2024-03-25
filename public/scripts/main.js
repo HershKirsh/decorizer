@@ -90,22 +90,12 @@ const productListItems = {
       .forEach((item, i) => {
         const innerString = `<h5 class="item-title">${item.name}</h5><img src="/assets/${item.img}" alt="${item.name}" title="Click to expand"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span>
         <div class="add-wrapper">
-          <button class="dec-qty-btn" onclick="decQty(this.nextElementSibling)">-</button>
+          <button class="dec-qty-btn" onclick="decQty(this.nextElementSibling);cartElements.addItem(this, ${i}, this.parentElement)" data-inc="${this.increments[item.num]}">-</button>
           <output class="item-qty" data-max="${item.qty}" data-inc="${this.increments[item.num]}">0</output>
-          <button class="inc-qty-btn" onclick="incQty(this.previousElementSibling)">+</button>
-        </div>
-        <button class="add-btn" onclick="cartElements.addItem(this, ${i}, this.previousElementSibling)">Add To Cart</button>`;
+          <button class="inc-qty-btn" onclick="incQty(this.previousElementSibling);cartElements.addItem(this, ${i}, this.parentElement)" data-sku="">+</button>
+        </div>`;
         createHtml('div', ['item', `${item.qty ? 'in-stock' : 'out-of-stock'}`], '', innerString, document.getElementById(item.section));
       });
-    htmlElements.itemQty = document.querySelectorAll('.item-qty');
-    htmlElements.itemQty.forEach(input => {
-      input.addEventListener('keydown', e => {
-        if (e.keyCode === 13) {
-          e.preventDefault();
-          input.nextElementSibling.click();
-        }
-      });
-    });
     document.querySelectorAll('.item img').forEach(x => x.addEventListener('click', () => x.classList.toggle('show')));
   }
 };
@@ -129,19 +119,19 @@ const cartElements = {
     // if (qty > parseInt(qty.max)) return alert(`only ${qty.max} available. \n Please reduce the quantity`);
     let listItem = productListItems.productList[i];
     let newItem = {...listItem, origQty: listItem.qty, qty: qty, weight: this.weights[listItem.num], cubicSize: this.cubicSizes[listItem.num]};
-    if (qty < 1) return;
-    const existingCartItem = this.cart.filter(item => item.sku === newItem.sku)[0];
-    existingCartItem ? (existingCartItem.qty = qty) : this.cart.push(newItem);
-    btn.classList.add('added');
+    const existingCartItem = this.cart.find(item => item.sku === newItem.sku);
+    if (!qty) {
+      if (!existingCartItem) return;
+      this.remove(cart.querySelector(`[id="${existingCartItem.sku}-row"]>td`), existingCartItem.sku);
+    } else {
+      existingCartItem ? (existingCartItem.qty = qty) : this.cart.push(newItem);
+    }
     this.calcTotal();
     this.updateCart();
-    setTimeout(() => {
-      btn.classList.remove('added');
-    }, 1000);
   },
   remove: function (element, sku) {
     element.parentElement.remove();
-    i = this.cart.findIndex(item => item.sku === sku);
+    const i = this.cart.findIndex(item => item.sku === sku);
     this.cart.splice(i, 1);
     this.calcTotal();
   },
@@ -163,19 +153,21 @@ const cartElements = {
     htmlElements.total.innerHTML = total.toFixed(2);
     this.total = total;
     if (this.discountAdded) {
-      document.getElementById('discount-row').remove();
+      document.getElementById('discount-row')?.remove();
       this.discountAdded = false;
       this.discountAmount = 0;
     }
-    if (itemTotal >= 500) {
-      this.addDiscount();
-    }
+    const discountEligibleTotal = this.cart
+      .filter(item => !item.discountExcluded)
+      .map(x => x.price * x.qty)
+      .reduce((a, b) => a + b, 0);
+    if (discountEligibleTotal >= 500) this.addDiscount();
   },
   discountName: '15% Discount',
   addDiscount: function () {
     this.discountAmount =
       this.cart
-        .filter(item => !item.discount)
+        .filter(item => !item.discountExcluded)
         .map(x => x.price * x.qty)
         .reduce((a, b) => a + b, 0) * 0.15;
     setTimeout(() => {
