@@ -60,7 +60,8 @@ router.get('/shipcost', function (req, res) {
           Package: {
             Dimensions: {
               UnitOfMeasurement: {Code: 'IN', Description: 'Inches'},
-              Length: (size + size * 0.2).toString(),
+              //add 5% to the size to account for packaging
+              Length: (size + size * 0.05).toString(),
               Width: size.toString(),
               Height: size.toString()
             },
