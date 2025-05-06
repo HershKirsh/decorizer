@@ -53,17 +53,30 @@ button {
 
 #nav li {
     list-style: none;
+    position: relative;
 }
 
 #nav li a {
     text-decoration: none;
     color: #fff;
-    transform: all .3s;
+    transition: all 0.3s;
 }
 
 #nav li a:hover {
     opacity: .7;
     text-decoration: underline;
+}
+
+a[href="#bundles"]::before {
+    content: "NEW";
+    position: absolute;
+    background: red;
+    font-size: min(1vw, 12px);
+    right: -13px;
+    top: -3px;
+    border-radius: 10px;
+    padding: 1px 3px;
+    rotate: 11deg;
 }
 
 header {

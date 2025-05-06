@@ -28,7 +28,7 @@ function getData(url, method) {
 }
 
 const apiPath = 'https://decorizer.herokuapp.com';
-// const apiPath = 'http://localhost:3000';
+// const apiPath = 'http://localhost:5000';
 
 (function () {
   let url = apiPath + '/products';
@@ -83,10 +83,10 @@ const createHtml = (tagName, classNames, idName, innerContent, insertTo) => {
 
 const productListItems = {
   productList: [],
-  increments: [3, 1, 6, 4, 3, 3, 6],
+  increments: [3, 1, 6, 4, 3, 3, 1, 6],
   appendList: function (list) {
     list
-      .sort((a, b) => a.order > b.order)
+      .sort((a, b) => (a.order > b.order ? 1 : -1))
       .forEach((item, i) => {
         const innerString = `<h5 class="item-title">${item.name}</h5><img src="/assets/${item.img}" alt="${item.name}" title="Click to expand"><h5>${item.sku}</h5><span class="price-wrapper">Price <b>$${item.price.toFixed(2)}</b></span>
         <div class="add-wrapper">
@@ -112,8 +112,8 @@ function incQty(output) {
 
 const cartElements = {
   cart: [],
-  weights: [3, 5, 0.45, 0.6, 1, 2, 0.1],
-  cubicSizes: [774, 785, 83, 110, 59, 326, 0.5],
+  weights: [3, 5, 0.45, 0.6, 1, 2, 4.5, 0.1],
+  cubicSizes: [774, 785, 83, 110, 59, 326, 500, 0.5],
   addItem: function (btn, i, qtyWrapper) {
     const qty = parseInt(qtyWrapper.querySelector('output').innerText);
     // if (qty > parseInt(qty.max)) return alert(`only ${qty.max} available. \n Please reduce the quantity`);
