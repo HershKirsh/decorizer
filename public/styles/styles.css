@@ -26,9 +26,18 @@ button {
     cursor: pointer;
 }
 
+.sticky-wrapper {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+}
+
 .banner {
     background: #fff;
     padding: 10px;
+    border-bottom: solid 1px;
+    z-index: 1;
 }
 
 .banner>p {
@@ -36,11 +45,13 @@ button {
     font-size: 20px;
 }
 
+.banner>p a {
+    color: #a5a5a5;
+}
+
 #nav {
     display: flex;
     justify-content: space-evenly;
-    position: sticky;
-    top: 0;
     width: 100%;
     background-color: var(--primary-color);
     margin: 0;
@@ -67,7 +78,7 @@ button {
     text-decoration: underline;
 }
 
-a[href="#bundles"]::before {
+#nav a[href="#bundles"]::before {
     content: "NEW";
     position: absolute;
     background: red;
