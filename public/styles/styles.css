@@ -505,6 +505,26 @@ div#sub-wrapper {
     z-index: 1;
 }
 
+.order-info {
+    margin: 20px 0;
+    color: #2e2e2e;
+    font-size: 18px;
+    font-weight: 900;
+    background: #fff;
+    width: 100%;
+    border-top: solid 2px var(--primary-color);
+    border-bottom: solid 2px var(--primary-color);
+}
+
+.order-info a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.order-info a:hover {
+    text-decoration: underline;
+}
+
 footer {
     position: relative;
     bottom: 0;
